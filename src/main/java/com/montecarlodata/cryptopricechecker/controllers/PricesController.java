@@ -1,21 +1,24 @@
 package com.montecarlodata.cryptopricechecker.controllers;
 
-import com.montecarlodata.cryptopricechecker.gateways.CryptoWatchGateway;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
+import com.montecarlodata.cryptopricechecker.models.TimeAndPrice;
+import com.montecarlodata.cryptopricechecker.services.SchedulerService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.util.List;
 
 @Path("/prices")
 public class PricesController {
-    private final CryptoWatchGateway cryptoWatchGateway;
+    private final SchedulerService schedulerService;
 
-    public PricesController(@RestClient CryptoWatchGateway cryptoWatchGateway) {
-        this.cryptoWatchGateway = cryptoWatchGateway;
+    public PricesController(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
     }
 
     @GET
-    public CryptoWatchGateway.Response getPrice() {
-        return cryptoWatchGateway.getPrice("btcusd");
+    @Path("/{currencyPair}")
+    public List<TimeAndPrice> getPricesForLast24Hours(@PathParam("currencyPair") String currencyPair) {
+        return schedulerService.getPricesForLast24Hours(currencyPair);
     }
 }

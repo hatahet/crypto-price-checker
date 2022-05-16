@@ -1,6 +1,6 @@
 package com.montecarlodata.cryptopricechecker.lifecycle;
 
-import com.montecarlodata.cryptopricechecker.services.CurrencyPriceWatcher;
+import com.montecarlodata.cryptopricechecker.services.SchedulerService;
 import io.quarkus.runtime.StartupEvent;
 import org.jboss.logging.Logger;
 
@@ -12,14 +12,14 @@ import java.io.IOException;
 public class ApplicationLifecycleBean {
     private static final Logger LOGGER = Logger.getLogger(ApplicationLifecycleBean.class);
 
-    private final CurrencyPriceWatcher watcher;
+    private final SchedulerService watcherService;
 
-    public ApplicationLifecycleBean(CurrencyPriceWatcher watcher) {
-        this.watcher = watcher;
+    public ApplicationLifecycleBean(SchedulerService watcherService) {
+        this.watcherService = watcherService;
     }
 
     void onStart(@Observes StartupEvent ev) throws IOException {
         LOGGER.info("The application is starting...");
-        watcher.scheduleWatchers();
+        watcherService.scheduleWatchers();
     }
 }
