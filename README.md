@@ -65,7 +65,7 @@ The existing `CryptoWatchGateway` would be made async. This is done by making `g
 type to save the returned metrics. The repository layer would also need to be made async.
 
 As we see, the challenge with using async operations is that it "infects" the code base and needs to be propagated
-everywhere. Luckily, virtual threads (green threads) have been in the work in the works for the JDK by means of
+everywhere. Luckily, virtual threads (green threads) have been in the works for the JDK by means of
 [Project Loom](https://openjdk.java.net/projects/loom/). It is set to debut as a preview feature in the upcoming
 [JDK 19](https://openjdk.java.net/jeps/425). This is a superior approach both for usability, code clarity, and
 debuggability. For this approach, all that is needed to change one line in `PriceWatcher.java`:
