@@ -27,13 +27,23 @@ public class PriceWatcher {
 
     public void watch(String currencyPair) {
         LOGGER.infov("Watching {0}", currencyPair);
-        executor.scheduleAtFixedRate(() -> fetchAndSavePrice(currencyPair), 0, 1, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(() -> {
+            try {
+                fetchAndSavePrice(currencyPair);
+            } catch (Throwable e) {
+                LOGGER.error("Error", e);
+            }
+        }, 0, 1, TimeUnit.MINUTES);
     }
 
     private void fetchAndSavePrice(String currencyPair) {
-            LOGGER.infov("Fetching price for {0}", currencyPair);
-            var response = cryptoWatchGateway.getPrice(currencyPair);
-            LOGGER.infov("Received price for {0}: {1}", currencyPair, response.result().price());
-            priceRepository.addPrice(currencyPair, ZonedDateTime.now(), response.result().price());
+        LOGGER.debugv("Fetching price for {0}", currencyPair);
+        var response = cryptoWatchGateway.getPrice(currencyPair);
+        LOGGER.debugv("Received price for {0}: {1}", currencyPair, response.result().price());
+        priceRepository.addPrice(currencyPair, ZonedDateTime.now(), response.result().price());
+    }
+
+    public void shutdownNow() {
+        executor.shutdownNow();
     }
 }

@@ -1,12 +1,12 @@
 package com.montecarlodata.cryptopricechecker.controllers;
 
-import com.montecarlodata.cryptopricechecker.models.TimeAndPrice;
+import com.montecarlodata.cryptopricechecker.models.SeriesAndRank;
 import com.montecarlodata.cryptopricechecker.services.SchedulerService;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import java.util.List;
 
 @Path("/prices")
 public class PricesController {
@@ -18,7 +18,8 @@ public class PricesController {
 
     @GET
     @Path("/{currencyPair}")
-    public List<TimeAndPrice> getPricesForLast24Hours(@PathParam("currencyPair") String currencyPair) {
-        return schedulerService.getPricesForLast24Hours(currencyPair);
+    public SeriesAndRank getPricesForLast24Hours(@PathParam("currencyPair") String currencyPair) {
+        return schedulerService.getPricesForLast24Hours(currencyPair)
+                .orElseThrow(NotFoundException::new);
     }
 }

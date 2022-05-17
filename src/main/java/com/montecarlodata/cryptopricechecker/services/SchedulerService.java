@@ -1,15 +1,14 @@
 package com.montecarlodata.cryptopricechecker.services;
 
 import com.montecarlodata.cryptopricechecker.loader.CurrencyPairLoader;
-import com.montecarlodata.cryptopricechecker.models.TimeAndPrice;
+import com.montecarlodata.cryptopricechecker.models.SeriesAndRank;
 import com.montecarlodata.cryptopricechecker.repositories.PriceRepository;
 import com.montecarlodata.cryptopricechecker.watcher.PriceWatcher;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.GET;
 import java.io.IOException;
-import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class SchedulerService {
@@ -32,7 +31,12 @@ public class SchedulerService {
         currencyPairs.forEach(watcher::watch);
     }
 
-    public List<TimeAndPrice> getPricesForLast24Hours(String currencyPair) {
+    public void shutdownWatchers() {
+        LOGGER.info("Shutting down watchers");
+        watcher.shutdownNow();
+    }
+
+    public Optional<SeriesAndRank> getPricesForLast24Hours(String currencyPair) {
         return priceRepository.getPricesForLast24Hours(currencyPair);
     }
 }

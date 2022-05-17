@@ -1,6 +1,7 @@
 package com.montecarlodata.cryptopricechecker.lifecycle;
 
 import com.montecarlodata.cryptopricechecker.services.SchedulerService;
+import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.jboss.logging.Logger;
 
@@ -21,5 +22,10 @@ public class ApplicationLifecycleBean {
     void onStart(@Observes StartupEvent ev) throws IOException {
         LOGGER.info("The application is starting...");
         watcherService.scheduleWatchers();
+    }
+
+    void onStop(@Observes ShutdownEvent ev) {
+        LOGGER.info("The application is stopping...");
+        watcherService.shutdownWatchers();
     }
 }
